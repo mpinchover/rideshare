@@ -1,6 +1,6 @@
-export type newRideSeekerEvent = {
+export type NewRideSeekerEvent = {
   eventName: string;
-  fromLocation: string;
-  toLocation: string;
+  rideTo: string;
+  rideFrom: string;
   userUuid: string;
 };

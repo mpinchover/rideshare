@@ -1,34 +1,47 @@
-import { Device } from "../types/entites/device";
+import { Socket } from "socket.io";
+import { Device } from "../types/entities/device";
 export class RideSeekers {
   seekers: Map<String, Device>;
   constructor() {
     this.seekers = new Map<String, Device>();
   }
 
-  addDevice() {}
+  addDevice(dev: Device) {
+    this.seekers.set(dev.userUuid, dev);
+  }
+
+  getActiveUsers() {
+    return Array.from(this.seekers.keys());
+  }
 
   removeDeviceByUuid(uuids: string[]) {
     for (const uuid of uuids) {
-      delete this.seekers[uuid];
+      this.seekers.delete(uuid);
     }
   }
 
+  getSocketByUserUuid(uuid: string): Socket {
+    return this.seekers.get(uuid)?.ws;
+  }
+
   findDeviceByUserUuid(uuid: string): Device {
-    return this.seekers[uuid];
+    return this.seekers.get(uuid);
   }
 
   findDeviceByDestination() {}
 
   findDeviceByStart() {}
 
-  findDeviceByStartEnd(start: string, end: string): Device {
-    for (const uuid in this.seekers) {
-      const device = this.seekers.get(uuid);
+  findDeviceByStartEnd(seekerUuid, start: string, end: string): Device {
+    for (let [userUuid, device] of this.seekers.entries()) {
+      if (seekerUuid === userUuid) {
+        continue;
+      }
+
       if (device?.rideFrom === start && device?.rideTo === end) {
         return device;
       }
     }
-
     return null;
   }
 }

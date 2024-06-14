@@ -5,4 +5,5 @@ export type Device = {
   rideFrom: string;
   rideTo: string;
   ws: Socket;
+  addedAt: number;
 };

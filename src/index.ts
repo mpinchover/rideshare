@@ -1,10 +1,28 @@
 const express = require("express");
-export const app = express();
-export const server = require("http").createServer(app);
-export const io = require("socket.io")(server);
+import { setupEvents } from "./event-handler";
+import { setupRoutes } from "./rest";
 
-import "./rest";
-import "./event-handler";
+import { RideSeekers } from "./controllers/ride-seekers";
+import { ChatClient } from "./clients/chat";
+import { RideManager } from "./controllers/ride-manager";
+
+const app = express();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+// dependencies
+const rideSeekers = new RideSeekers();
+const chatClient = new ChatClient();
+
+// controllers
+const rideManager = new RideManager(rideSeekers, chatClient);
+
+setupEvents(io, rideManager);
+setupRoutes(app, rideManager);
 
 // @ts-ignore
 const PORT = parseInt(process.env.PORT) || 8080;

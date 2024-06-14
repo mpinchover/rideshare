@@ -1,6 +1,6 @@
 const io = require("socket.io-client");
-const socket = io("https://rideshare-ioa6aku2ia-ue.a.run.app"); // Adjust the port if necessary
-
+// const socket = io("https://rideshare-ioa6aku2ia-ue.a.run.app"); // Adjust the port if necessary
+const socket = io("http://localhost:8080");
 socket.on("connection", () => {
   console.log("Connected to the server");
 
